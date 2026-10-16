@@ -1,0 +1,461 @@
+using System;
+using System.Collections.Generic;
+
+public class studentmanager
+{
+    public List<student> students;
+    public List<course> Courses;
+    public List<Instructor> instructors;
+
+    public studentmanager()
+    {
+        students = new List<student>();
+        Courses = new List<course>();
+        instructors = new List<Instructor>();
+    }
+
+    public bool AddStudent(student student)
+    {
+        if (student == null)
+        {
+            Console.WriteLine("no student have been provided");
+            return false;
+        }
+
+        for (int i = 0; i < students.Count; i++)
+        {
+            if (students[i].studentid == student.studentid)
+            {
+                Console.WriteLine("student already exists");
+                return false;
+            }
+        }
+
+        students.Add(student);
+        Console.WriteLine("Student added");
+        return true;
+    }
+
+    public bool AddInstructor(Instructor instructor)
+    {
+        if (instructor == null)
+        {
+            Console.WriteLine("no insturctor have been provided");
+            return false;
+        }
+
+        for (int i = 0; i < instructors.Count; i++)
+        {
+            if (instructors[i].instructorid == instructor.instructorid)
+            {
+                Console.WriteLine("instructor already exists");
+                return false;
+            }
+        }
+
+        instructors.Add(instructor);
+        Console.WriteLine("instructor added");
+        return true;
+    }
+
+    public bool AddCourse(course Course)
+    {
+        if (Course == null)
+        {
+            Console.WriteLine("no Course have been provided");
+            return false;
+        }
+
+        for (int i = 0; i < Courses.Count; i++)
+        {
+            if (Courses[i].courseid == Course.courseid)
+            {
+                Console.WriteLine("Course already exists");
+                return false;
+            }
+        }
+
+        Courses.Add(Course);
+        Console.WriteLine("Course added");
+        return true;
+    }
+
+    public student FindStudent(int studentId)
+    {
+        for (int i = 0; i < students.Count; i++)
+        {
+            if (students[i].studentid == studentId)
+            {
+                Console.WriteLine("Student found");
+                return students[i];
+            }
+        }
+
+        Console.WriteLine("Student not found");
+        return null;
+    }
+
+    public Instructor FindInstructor(int instId)
+    {
+        for (int i = 0; i < instructors.Count; i++)
+        {
+            if (instructors[i].instructorid == instId)
+            {
+                Console.WriteLine("instructorid found");
+                return instructors[i];
+            }
+        }
+
+        Console.WriteLine("Instructor not found");
+        return null;
+    }
+
+    public course FindCourse(int courseId)
+    {
+        for (int i = 0; i < Courses.Count; i++)
+        {
+            if (Courses[i].courseid == courseId)
+            {
+                Console.WriteLine("courseid found");
+                return Courses[i];
+            }
+        }
+
+        Console.WriteLine("course not found");
+        return null;
+    }
+
+    public bool EnrollStudentInCourse(int studentId, int courseId)
+    {
+        student student = FindStudent(studentId);
+        course Course = FindCourse(courseId);
+
+        if (student != null && Course != null)
+        {
+            return student.enrollstudent(Course);
+        }
+
+        return false;
+    }
+
+    public void ShowAllStudents()
+    {
+        if (students.Count == 0)
+        {
+            Console.WriteLine("No students found.");
+            return;
+        }
+
+        for (int i = 0; i < students.Count; i++)
+        {
+            Console.WriteLine(students[i].PrintDetails());
+        }
+    }
+
+    public void ShowAllCourses()
+    {
+        if (Courses.Count == 0)
+        {
+            Console.WriteLine("No courses found.");
+            return;
+        }
+
+        for (int i = 0; i < Courses.Count; i++)
+        {
+            Console.WriteLine(Courses[i].PrintDetails());
+        }
+    }
+
+    public void ShowAllInstructors()
+    {
+        if (instructors.Count == 0)
+        {
+            Console.WriteLine("No instructors found.");
+            return;
+        }
+
+        for (int i = 0; i < instructors.Count; i++)
+        {
+            Console.WriteLine(instructors[i].PrintDetails());
+        }
+    }
+
+    public bool IsStudentEnrolled(int studentId, int courseId)
+    {
+        student student = FindStudent(studentId);
+
+        if (student == null)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < student.Courses.Count; i++)
+        {
+            if (student.Courses[i].courseid == courseId)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public string GetInstructorNameByCourse(string courseName)
+    {
+        for (int i = 0; i < Courses.Count; i++)
+        {
+            if (Courses[i].title == courseName)
+            {
+                return Courses[i].instructor.name;
+            }
+        }
+
+        return "Instructor not found";
+    }
+}
+
+public class Instructor
+{
+    public int instructorid;
+    public string name;
+    public string specialization;
+
+    public Instructor(int instid, string name, string spec)
+    {
+        instructorid = instid;
+        this.name = name;
+        specialization = spec;
+    }
+
+    public string PrintDetails()
+    {
+        return $"ID:{instructorid}, Name:{name}, specialization:{specialization}";
+    }
+}
+
+public class course
+{
+    public int courseid;
+    public string title;
+    public Instructor instructor;
+
+    public course(int courseid, string title, Instructor instructor)
+    {
+        this.courseid = courseid;
+        this.title = title;
+        this.instructor = instructor;
+    }
+
+    public string PrintDetails()
+    {
+        return $"ID:{courseid}, title:{title}, instructor:{instructor.name}";
+    }
+}
+
+public class student
+{
+    public int studentid;
+    public string name;
+    public int age;
+    public List<course> Courses;
+
+    public student(int studentid, string name, int age)
+    {
+        Courses = new List<course>();
+        this.studentid = studentid;
+        this.name = name;
+        this.age = age;
+    }
+
+    public bool enrollstudent(course Course)
+    {
+        if (Course == null)
+        {
+            Console.WriteLine("no course have been provided");
+            return false;
+        }
+
+        for (int i = 0; i < Courses.Count; i++)
+        {
+            if (Course.courseid == Courses[i].courseid)
+            {
+                Console.WriteLine("Student already enrolled");
+                return false;
+            }
+        }
+
+        Courses.Add(Course);
+        Console.WriteLine("Course added successfully");
+        return true;
+    }
+
+    public string PrintDetails()
+    {
+        string details = $"ID:{studentid}, Name:{name}, age:{age}";
+        for (int i = 0; i < Courses.Count; i++)
+        {
+            details += $"enrolled in: {Courses[i].title}";
+        }
+        return details;
+    }
+}
+
+class HelloWorld
+{
+   
+static void Main()
+{
+    studentmanager manager = new studentmanager();
+
+    while (true)
+    {
+        Console.WriteLine("Student Management System");
+        Console.WriteLine("1. Add Student");
+        Console.WriteLine("2. Add Instructor");
+        Console.WriteLine("3. Add Course");
+        Console.WriteLine("4. Enroll Student in Course");
+        Console.WriteLine("5. Show All Students");
+        Console.WriteLine("6. Show All Courses");
+        Console.WriteLine("7. Show All Instructors");
+        Console.WriteLine("8. Check Student Enrollment");
+        Console.WriteLine("9. Find Instructor by Course Name");
+        Console.WriteLine("10. Find Student");
+        Console.WriteLine("11. Find Instructor");
+        Console.WriteLine("12. Find Course");
+        Console.WriteLine("13. Exit");
+        Console.Write("Choose an option: ");
+
+        int choice = int.Parse(Console.ReadLine());
+
+        if (choice == 1)
+        {
+            Console.Write("Enter student ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter student name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Enter student age: ");
+            int age = int.Parse(Console.ReadLine());
+
+            manager.AddStudent(new student(id, name, age));
+        }
+        else if (choice == 2)
+        {
+            Console.Write("Enter instructor ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter instructor name: ");
+            string name = Console.ReadLine();
+
+            Console.Write("Enter specialization: ");
+            string specialization = Console.ReadLine();
+
+            manager.AddInstructor(new Instructor(id, name, specialization));
+        }
+        else if (choice == 3)
+        {
+            Console.Write("Enter course ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter course title: ");
+            string title = Console.ReadLine();
+
+            Console.Write("Enter instructor ID: ");
+            int instructorId = int.Parse(Console.ReadLine());
+
+            Instructor instructor = manager.FindInstructor(instructorId);
+
+            if (instructor != null)
+            {
+                manager.AddCourse(new course(id, title, instructor));
+            }
+        }
+        else if (choice == 4)
+        {
+            Console.Write("Enter student ID: ");
+            int studentId = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter course ID: ");
+            int courseId = int.Parse(Console.ReadLine());
+
+            manager.EnrollStudentInCourse(studentId, courseId);
+        }
+        else if (choice == 5)
+        {
+            manager.ShowAllStudents();
+        }
+        else if (choice == 6)
+        {
+            manager.ShowAllCourses();
+        }
+        else if (choice == 7)
+        {
+            manager.ShowAllInstructors();
+        }
+        else if (choice == 8)
+        {
+            Console.Write("Enter student ID: ");
+            int studentId = int.Parse(Console.ReadLine());
+
+            Console.Write("Enter course ID: ");
+            int courseId = int.Parse(Console.ReadLine());
+
+            bool enrolled = manager.IsStudentEnrolled(studentId, courseId);
+
+            if (enrolled)
+                Console.WriteLine("Student is enrolled in this course.");
+            else
+                Console.WriteLine("Student is not enrolled.");
+        }
+        else if (choice == 9)
+        {
+            Console.Write("Enter course name: ");
+            string courseName = Console.ReadLine();
+
+            string instructorName = manager.GetInstructorNameByCourse(courseName);
+
+            Console.WriteLine("Instructor: " + instructorName);
+        }
+        else if (choice == 10)
+        {
+            Console.Write("Enter student ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            student s = manager.FindStudent(id);
+
+            if (s != null)
+                Console.WriteLine(s.PrintDetails());
+        }
+        else if (choice == 11)
+        {
+            Console.Write("Enter instructor ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            Instructor i = manager.FindInstructor(id);
+
+            if (i != null)
+                Console.WriteLine(i.PrintDetails());
+        }
+        else if (choice == 12)
+        {
+            Console.Write("Enter course ID: ");
+            int id = int.Parse(Console.ReadLine());
+
+            course c = manager.FindCourse(id);
+
+            if (c != null)
+                Console.WriteLine(c.PrintDetails());
+        }
+        else if (choice == 13)
+        {
+            Console.WriteLine("Goodbye!");
+            break;
+        }
+        else
+        {
+            Console.WriteLine("Invalid option.");
+        }
+    }
+}
+}
