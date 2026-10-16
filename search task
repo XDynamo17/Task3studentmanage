@@ -1,0 +1,13 @@
+من خلال ال[] variable هى خاصيه من خلالها نقدر نوصل لعناصر جوا
+  indexer ال
+class:
+refrence لمكان ال data
+stored فى ال heap 
+
+Struct:
+data موجوده فى ال stack 
+وال variable عنده ال vlaue
+
+Record:
+data غير قابله للتعديل بيتعملها refrence لو struct
+
